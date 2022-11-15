@@ -1,0 +1,67 @@
+{
+	// Editor
+
+	"editor.tabSize": 2,
+	"editor.wordWrap": "on",
+	"editor.defaultFormatter": "esbenp.prettier-vscode",
+	"editor.codeActionsOnSave": {
+		"source.fixAll": true,
+		"source.fixAll.eslint": true
+	},
+
+	"[javascript]": {
+		"editor.defaultFormatter": "esbenp.prettier-vscode",
+		"editor.formatOnSave": true
+	},
+
+	"javascript.updateImportsOnFileMove.enabled": "always",
+	"typescript.updateImportsOnFileMove.enabled": "always",
+	"eslint.workingDirectories": [{ "mode": "auto" }],
+	"prettier.useTabs": true,
+
+	// Import sorter
+
+	"importSorter.generalConfiguration.sortOnBeforeSave": true,
+	"importSorter.sortConfiguration.customOrderingRules.defaultOrderLevel": 100,
+	"importSorter.sortConfiguration.removeUnusedImports": true,
+	"importSorter.sortConfiguration.removeUnusedDefaultImports": true,
+	"importSorter.sortConfiguration.customOrderingRules.rules": [
+		{
+			// Import utils
+			"regex": "^@?services/|.utils$|.actions$|.state$|.api$|.reducer$|.saga$|.workers$",
+			"orderLevel": 300
+		},
+
+		{
+			// Import constants
+			"regex": "^@?constants/|style/colors|style/fonts|style/font-size|style/z-index|.constants$",
+			"orderLevel": 400
+		},
+		{
+			// Import constants
+			"regex": "^@?typings|.types$|.typings$",
+			"orderLevel": 500
+		},
+
+		{
+			// Import constants
+			"regex": ".styles$|.styled$|^@?style/|.css$",
+			"orderLevel": 600
+		},
+
+		{
+			// Import componenets
+			"regex": "^@?components/|^./components|^@?screens/|/((?!~.).)*$",
+			"orderLevel": 200
+		}
+	],
+	"workbench.colorTheme": "One Dark Pro",
+	"editor.formatOnSave": true,
+	"html.format.wrapLineLength": 80,
+	"files.autoSave": "onFocusChange",
+	"bracketPairColorizer.depreciation-notice": false,
+	"window.zoomLevel": 0,
+	"json.schemas": [
+		
+	]
+}
