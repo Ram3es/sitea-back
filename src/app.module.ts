@@ -5,6 +5,7 @@ import { AppController } from './app.controller';
 
 import { AuthModule } from './auth/auth.module';
 import { UserModule } from './user/user.module';
+import { WalletModule } from './wallet/wallet.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { UserModule } from './user/user.module';
     TypeOrmModule.forRootAsync({}),
     AuthModule,
     UserModule,
+    WalletModule,
   ],
   controllers: [AppController],
   providers: [],
