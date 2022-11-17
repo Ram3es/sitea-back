@@ -14,6 +14,7 @@ export class DatabaseConfig implements TypeOrmOptionsFactory {
       synchronize: true,
       logging: false,
       entities: ['dist/**/*.entity.js'],
+      extra: { ssl: { rejectUnauthorized: false } },
     };
   }
 }

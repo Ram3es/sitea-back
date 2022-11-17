@@ -1,9 +1,10 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { AppController } from './app.controller';
 
+import { AppController } from './app.controller';
 import { AuthModule } from './auth/auth.module';
+import { GoogleAuthModule } from './auth/google-auth/google-auth.module';
 import { DatabaseConfig } from './shared/database.config';
 import { UserModule } from './user/user.module';
 import { WalletModule } from './wallet/wallet.module';
@@ -19,6 +20,7 @@ import { WalletModule } from './wallet/wallet.module';
     AuthModule,
     UserModule,
     WalletModule,
+    GoogleAuthModule,
   ],
   controllers: [AppController],
   providers: [],
