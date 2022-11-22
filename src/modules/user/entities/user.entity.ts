@@ -1,8 +1,8 @@
-import { ResultEntity } from './../../result/entities/result.entity';
+import { ResultEntity } from '../../result/entities/result.entity';
 import { ApiProperty } from '@nestjs/swagger';
 import { Exclude } from 'class-transformer';
 import { ROLES } from 'src/constants/roles';
-import { WalletEnity } from 'src/wallet/entities/wallet.entity';
+import { WalletEnity } from 'src/modules/wallet/entities/wallet.entity';
 import {
   Column,
   CreateDateColumn,

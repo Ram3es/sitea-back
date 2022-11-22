@@ -1,14 +1,17 @@
+import { ConfigService } from '@nestjs/config';
 import { Injectable } from '@nestjs/common';
 import { Auth, google } from 'googleapis';
-
-import { ENV_VAR } from 'src/constants/env-variables';
 import { AuthService } from '../auth.service';
 
 @Injectable()
 export class GoogleAuthService {
   oAuthClient: Auth.OAuth2Client;
-  constructor(private readonly authService: AuthService) {
-    const { GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET } = ENV_VAR;
+  constructor(
+    private readonly authService: AuthService,
+    private configService: ConfigService
+  ) {
+    const GOOGLE_CLIENT_ID = this.configService.get('GOOGLE_CLIENT_ID');
+    const GOOGLE_CLIENT_SECRET = this.configService.get('GOOGLE_CLIENT_SECRET');
 
     this.oAuthClient = new google.auth.OAuth2(
       GOOGLE_CLIENT_ID,

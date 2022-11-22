@@ -1,3 +1,4 @@
+import { ConfigService } from '@nestjs/config';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
@@ -6,10 +7,9 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { instanceToPlain } from 'class-transformer';
 
 import { EXPIRE_JWT_TIME } from 'src/constants/format';
-import { UserService } from 'src/user/user.service';
-import { ENV_VAR } from 'src/constants/env-variables';
-import { WalletEnity } from 'src/wallet/entities/wallet.entity';
-import { UserEntity } from 'src/user/entities/user.entity';
+import { UserService } from 'src/modules/user/user.service';
+import { WalletEnity } from 'src/modules/wallet/entities/wallet.entity';
+import { UserEntity } from 'src/modules/user/entities/user.entity';
 
 import { WalletDto } from './dto/login-wallet.dto';
 
@@ -18,6 +18,7 @@ export class AuthService {
   constructor(
     private jwtService: JwtService,
     private userService: UserService,
+    private configService: ConfigService,
     @InjectRepository(UserEntity)
     private readonly userRepository: Repository<UserEntity>,
     @InjectRepository(WalletEnity)
@@ -32,7 +33,8 @@ export class AuthService {
   }
 
   private createSecretString(personalKey: string) {
-    return `${ENV_VAR.JWT_SECRET_KEY}${personalKey}`;
+    const secret = this.configService.get('JWT_SECRET_KEY');
+    return `${secret}${personalKey}`;
   }
 
   async signIn(email: string) {
