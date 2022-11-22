@@ -1,0 +1,1 @@
+export const EXPIRE_JWT_TIME = 86400000;

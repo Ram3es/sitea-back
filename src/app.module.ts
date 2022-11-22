@@ -8,6 +8,7 @@ import { GoogleAuthModule } from './auth/google-auth/google-auth.module';
 import { DatabaseConfig } from './shared/database.config';
 import { UserModule } from './user/user.module';
 import { WalletModule } from './wallet/wallet.module';
+import { ResultModule } from './result/result.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { WalletModule } from './wallet/wallet.module';
     UserModule,
     WalletModule,
     GoogleAuthModule,
+    ResultModule,
   ],
   controllers: [AppController],
   providers: [],

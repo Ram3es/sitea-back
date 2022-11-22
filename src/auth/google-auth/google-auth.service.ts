@@ -1,12 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { Auth, google } from 'googleapis';
+
 import { ENV_VAR } from 'src/constants/env-variables';
-import { TokenVerifyDto } from '../dto/token-verify.dto';
+import { AuthService } from '../auth.service';
 
 @Injectable()
 export class GoogleAuthService {
   oAuthClient: Auth.OAuth2Client;
-  constructor() {
+  constructor(private readonly authService: AuthService) {
     const { GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET } = ENV_VAR;
 
     this.oAuthClient = new google.auth.OAuth2(
@@ -25,7 +26,8 @@ export class GoogleAuthService {
     const { data } = await userInfoClient.get({
       auth: this.oAuthClient,
     });
+    const userEmail = data.email;
 
-    return '';
+    return this.authService.signIn(userEmail);
   }
 }

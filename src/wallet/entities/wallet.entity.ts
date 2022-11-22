@@ -1,7 +1,7 @@
-import { UserEntity } from './../../user/entities/user.entity';
 import { Column, ManyToOne } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 import { Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { UserEntity } from 'src/user/entities/user.entity';
 
 @Entity('wallet')
 export class WalletEnity {

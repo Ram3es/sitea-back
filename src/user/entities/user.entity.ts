@@ -1,4 +1,6 @@
+import { ResultEntity } from './../../result/entities/result.entity';
 import { ApiProperty } from '@nestjs/swagger';
+import { Exclude } from 'class-transformer';
 import { ROLES } from 'src/constants/roles';
 import { WalletEnity } from 'src/wallet/entities/wallet.entity';
 import {
@@ -22,9 +24,10 @@ export class UserEntity {
 
   @UpdateDateColumn()
   @ApiProperty({ example: new Date() })
+  @Exclude()
   updated: Date;
 
-  @Column()
+  @Column({ nullable: true })
   @ApiProperty({ example: 'user@gmail.com' })
   email: string;
 
@@ -36,6 +39,15 @@ export class UserEntity {
   @ApiProperty({ example: ROLES.user })
   role: ROLES;
 
-  @OneToMany(() => WalletEnity, (data) => data.user)
-  wallets: string[];
+  @Column({
+    type: 'varchar',
+  })
+  @Exclude()
+  publicKey: string;
+
+  @OneToMany(() => WalletEnity, (data) => data.user, { cascade: true })
+  wallets: WalletEnity[];
+
+  @OneToMany(() => ResultEntity, (data) => data.user)
+  results: ResultEntity[];
 }
