@@ -9,6 +9,8 @@ import { UserModule } from './modules/user/user.module';
 import { WalletModule } from './modules/wallet/wallet.module';
 import { ResultModule } from './modules/result/result.module';
 import { GoogleAuthModule } from './modules/auth/google-auth/google-auth.module';
+import { NearModule } from './modules/near/near.module';
+import { NearService } from './modules/near/near.service';
 
 const currentEnv = process.env.NODE_ENV || 'local';
 
@@ -26,8 +28,9 @@ const currentEnv = process.env.NODE_ENV || 'local';
     WalletModule,
     GoogleAuthModule,
     ResultModule,
+    NearModule,
   ],
   controllers: [AppController],
-  providers: [],
+  providers: [NearService],
 })
 export class AppModule {}

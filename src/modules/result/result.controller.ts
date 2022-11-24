@@ -1,5 +1,6 @@
-import { ResultService } from './result.service';
 import { Body, Controller, Post } from '@nestjs/common';
+
+import { ResultService } from './result.service';
 import { CreateResultDto } from './dto/create-result.dto';
 
 @Controller('result')

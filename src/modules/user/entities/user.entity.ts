@@ -1,8 +1,3 @@
-import { ResultEntity } from '../../result/entities/result.entity';
-import { ApiProperty } from '@nestjs/swagger';
-import { Exclude } from 'class-transformer';
-import { ROLES } from 'src/constants/roles';
-import { WalletEnity } from 'src/modules/wallet/entities/wallet.entity';
 import {
   Column,
   CreateDateColumn,
@@ -11,6 +6,14 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { Exclude } from 'class-transformer';
+
+import { ApiProperty } from '@nestjs/swagger';
+import { ROLES } from 'src/constants/roles';
+import { WalletEnity } from 'src/modules/wallet/entities/wallet.entity';
+import { NearWalletEntity } from 'src/modules/near/entities/near-wallet.entity';
+
+import { ResultEntity } from '../../result/entities/result.entity';
 
 @Entity('user')
 export class UserEntity {
@@ -47,6 +50,9 @@ export class UserEntity {
 
   @OneToMany(() => WalletEnity, (data) => data.user, { cascade: true })
   wallets: WalletEnity[];
+
+  @OneToMany(() => NearWalletEntity, (data) => data.user, { cascade: true })
+  nearWallets: NearWalletEntity[];
 
   @OneToMany(() => ResultEntity, (data) => data.user)
   results: ResultEntity[];

@@ -1,8 +1,9 @@
-import { WalletEnity } from './entities/wallet.entity';
-import { TypeOrmModule } from '@nestjs/typeorm';
 import { Module } from '@nestjs/common';
-import { WalletController } from './wallet.controller';
+import { TypeOrmModule } from '@nestjs/typeorm';
+
 import { WalletService } from './wallet.service';
+import { WalletEnity } from './entities/wallet.entity';
+import { WalletController } from './wallet.controller';
 
 @Module({
   imports: [TypeOrmModule.forFeature([WalletEnity])],

@@ -1,15 +1,17 @@
-import { ConfigService } from '@nestjs/config';
-import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
+import { Repository } from 'typeorm';
+import { instanceToPlain } from 'class-transformer';
+
 import { JwtService } from '@nestjs/jwt';
 import { Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { InjectRepository } from '@nestjs/typeorm';
-import { instanceToPlain } from 'class-transformer';
 
 import { EXPIRE_JWT_TIME } from 'src/constants/format';
 import { UserService } from 'src/modules/user/user.service';
-import { WalletEnity } from 'src/modules/wallet/entities/wallet.entity';
 import { UserEntity } from 'src/modules/user/entities/user.entity';
+import { WalletEnity } from 'src/modules/wallet/entities/wallet.entity';
+import { NearWalletEntity } from 'src/modules/near/entities/near-wallet.entity';
 
 import { WalletDto } from './dto/login-wallet.dto';
 
@@ -22,7 +24,9 @@ export class AuthService {
     @InjectRepository(UserEntity)
     private readonly userRepository: Repository<UserEntity>,
     @InjectRepository(WalletEnity)
-    private readonly walletRepository: Repository<WalletEnity>
+    private readonly walletRepository: Repository<WalletEnity>,
+    @InjectRepository(NearWalletEntity)
+    private readonly nearWalletRepository: Repository<NearWalletEntity>
   ) {}
 
   createToken(user: UserEntity) {
@@ -39,11 +43,9 @@ export class AuthService {
 
   async signIn(email: string) {
     const emailUser = email.toLowerCase();
-
     const user = await this.userRepository.findOne({
       where: { email: emailUser },
     });
-
     const publicKey = await bcrypt.genSalt(6);
 
     if (!user) {
@@ -53,18 +55,17 @@ export class AuthService {
       });
       const token = this.createToken(newUser);
 
+      const userWithWallets = await this.userService.getUserById(newUser.id);
+
       return {
-        user: this.userSerialize(newUser),
+        user: this.userSerialize(userWithWallets),
         token,
       };
     }
-
     await this.userRepository.update(user.id, {
       publicKey,
     });
-
     const newUser = await this.userService.getUserById(user.id);
-
     const token = this.createToken(newUser);
 
     return {
@@ -74,7 +75,6 @@ export class AuthService {
   }
   async signInWallet(body: WalletDto) {
     const { wallet } = body;
-
     const user = await this.userRepository
       .createQueryBuilder('user')
       .leftJoinAndSelect('user.wallets', 'wallet')
@@ -87,17 +87,57 @@ export class AuthService {
       const newUser = await this.userRepository.save({
         publicKey,
       });
-
       await this.walletRepository.save({
         wallet,
-        newUser,
+        user: newUser,
+      });
+      const userWithWallet = await this.userRepository.findOne({
+        where: { id: newUser.id },
+        relations: { wallets: true, nearWallets: true },
+      });
+      const token = this.createToken(newUser);
+
+      return {
+        user: this.userSerialize(userWithWallet),
+        token,
+      };
+    }
+
+    await this.userRepository.update(user.id, {
+      publicKey,
+    });
+    const updatedUser = await this.userService.getUserById(user.id);
+    const token = this.createToken(updatedUser);
+
+    return {
+      user: this.userSerialize(updatedUser),
+      token,
+    };
+  }
+
+  async nearLogin(wallet: string) {
+    const user = await this.userRepository
+      .createQueryBuilder('user')
+      .leftJoinAndSelect('user.nearWallets', 'near')
+      .where('near.wallet =(:wallet)', { wallet })
+      .getOne();
+
+    const publicKey = await bcrypt.genSalt(6);
+    if (!user) {
+      const newUser = await this.userRepository.save({
+        publicKey,
+      });
+
+      await this.nearWalletRepository.save({
+        wallet,
+        user: newUser,
       });
 
       const userWithWallet = await this.userRepository.findOne({
-        where: { id: user.id },
-        relations: { wallets: true },
+        where: { id: newUser.id },
+        relations: { nearWallets: true, wallets: true },
       });
-      const token = this.createToken(newUser);
+      const token = this.createToken(userWithWallet);
 
       return {
         user: this.userSerialize(userWithWallet),
