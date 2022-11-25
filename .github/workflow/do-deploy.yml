@@ -1,0 +1,57 @@
+name: Deploy to DigitalOcean
+
+on:
+  push:
+    branches:
+      - master
+
+env:
+  REGISTRY_NAME: sityea
+
+jobs:
+  #Push to Digital Ocean private Registry
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Set env vars (development)
+        run: |
+          echo "IMAGE_NAME=sityea-back-dev" >> $GITHUB_ENV
+          echo "ENV=development" >> $GITHUB_ENV
+          echo "PORT=${{ secrets.PORT }}" >> $GITHUB_ENV
+          echo "POSTGRES_HOST=${{ secrets.POSTGRES_HOST }}" >> $GITHUB_ENV
+          echo "POSTGRES_PORT=${{ secrets.POSTGRES_PORT }}" >> $GITHUB_ENV
+          echo "POSTGRES_USER=${{ secrets.POSTGRES_USER }}" >> $GITHUB_ENV
+          echo "POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}" >> $GITHUB_ENV
+          echo "POSTGRES_DATABASE=${{ secrets.POSTGRES_DATABASE }}" >> $GITHUB_ENV
+          echo "JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }}" >> $GITHUB_ENV
+          echo "GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}" >> $GITHUB_ENV
+          echo "GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }}" >> $GITHUB_ENV
+
+      - name: Create env file
+        run: |
+          echo PORT=$PORT >> .env.$ENV
+          echo POSTGRES_HOST=$POSTGRES_HOST >> .env.$ENV
+          echo POSTGRES_PORT=$POSTGRES_PORT >> .env.$ENV
+          echo POSTGRES_USER=$POSTGRES_USER >> .env.$ENV
+          echo POSTGRES_PASSWORD=$POSTGRES_PASSWORD >> .env.$ENV
+          echo POSTGRES_DATABASE=$POSTGRES_DATABASE >> .env.$ENV
+          echo JWT_SECRET_KEY=$JWT_SECRET_KEY >> .env.$ENV
+          echo GOOGLE_CLIENT_ID=$GOOGLE_CLIENT_ID >> .env.$ENV
+          echo GOOGLE_CLIENT_SECRET=$GOOGLE_CLIENT_SECRET >> .env.$ENV
+
+      - name: Build image
+        run: docker build -f deploy/Dockerfile -t $IMAGE_NAME --build-arg ENV=$ENV .
+
+      - name: Install doctl # install the doctl on the runner
+        uses: digitalocean/action-doctl@v2
+        with:
+          token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
+
+      - name: push image to digitalocean
+        run: |
+          doctl registry login
+          docker tag $IMAGE_NAME registry.digitalocean.com/$REGISTRY_NAME/$IMAGE_NAME
+          docker push registry.digitalocean.com/$REGISTRY_NAME/$IMAGE_NAME
