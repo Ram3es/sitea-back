@@ -10,7 +10,8 @@ import { WalletModule } from './modules/wallet/wallet.module';
 import { ResultModule } from './modules/result/result.module';
 import { GoogleAuthModule } from './modules/auth/google-auth/google-auth.module';
 import { NearModule } from './modules/near/near.module';
-import { NearService } from './modules/near/near.service';
+import { APP_FILTER } from '@nestjs/core';
+import { HttpExceptionFilter } from './utils/http-exception.filter';
 
 const currentEnv = process.env.NODE_ENV || 'local';
 
@@ -31,6 +32,11 @@ const currentEnv = process.env.NODE_ENV || 'local';
     NearModule,
   ],
   controllers: [AppController],
-  providers: [NearService],
+  providers: [
+    {
+      provide: APP_FILTER,
+      useClass: HttpExceptionFilter,
+    },
+  ],
 })
 export class AppModule {}

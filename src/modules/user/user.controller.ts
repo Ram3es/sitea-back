@@ -1,4 +1,6 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
+import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
+import { RolesGuard } from 'src/guards/role.guard';
 import { AddWalletDto } from './dto/add-metamask.dto';
 import { UpdateEmailDto } from './dto/update-email.dto';
 import { USER_ROUTES } from './user.constatnts';
@@ -15,18 +17,22 @@ export class UserController {
   }
 
   @Get(USER_ROUTES.getAllUsers)
+  @UseGuards(new RolesGuard(['admin']))
   async getAllUses() {
     return this.userService.getAllUsers();
   }
   @Post(USER_ROUTES.updateEmail)
+  @UseGuards(JwtAuthGuard)
   async connectEmail(@Body() body: UpdateEmailDto) {
     return this.userService.updateUserEmail(body);
   }
   @Post(USER_ROUTES.addMetamask)
+  @UseGuards(JwtAuthGuard)
   async addMetamaskWallet(@Body() body: AddWalletDto) {
     return this.userService.addMetamaskWallet(body);
   }
   @Post(USER_ROUTES.addNearWallet)
+  @UseGuards(JwtAuthGuard)
   async addNearWallet(@Body() body: AddWalletDto) {
     return this.userService.addNearWallet(body);
   }

@@ -50,6 +50,7 @@ export class UserService {
       .createQueryBuilder('user')
       .where({ id })
       .leftJoinAndSelect('user.wallets', 'wallet')
+      .leftJoinAndSelect('user.nearWallets', 'near')
       .leftJoinAndSelect('user.results', 'results')
       .getOne();
   }
