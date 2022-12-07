@@ -14,7 +14,7 @@ export class ResultEntity {
   @ApiProperty({ example: 'bd4bc467-77a5-4ea9-975b-16d1eebef55d' })
   id: string;
 
-  @Column()
+  @Column({ type: 'timestamptz', precision: 3 })
   @ApiProperty({ example: new Date() })
   day: Date;
 
