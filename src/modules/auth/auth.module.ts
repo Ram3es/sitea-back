@@ -1,3 +1,4 @@
+import { ResultModule } from './../result/result.module';
 import { JwtStrategy } from './jwt.strategy';
 import { Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
@@ -22,6 +23,7 @@ import { PassportModule } from '@nestjs/passport';
     UserModule,
     WalletModule,
     NearModule,
+    ResultModule,
   ],
   controllers: [AuthController],
   providers: [AuthService, JwtStrategy],

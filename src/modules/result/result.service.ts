@@ -6,6 +6,8 @@ import { UserService } from 'src/modules/user/user.service';
 import { ResultEntity } from './entities/result.entity';
 import { CreateResultDto } from './dto/create-result.dto';
 
+import { MOCK_DATA } from './result.constants';
+
 @Injectable()
 export class ResultService {
   constructor(
@@ -22,5 +24,13 @@ export class ResultService {
       ...rest,
       user,
     });
+  }
+
+  async addMockData(userId: string) {
+    const user = await this.userService.getUserById(userId);
+
+    const value = MOCK_DATA.map((item) => ({ ...item, user }));
+
+    await this.resultRepository.save(value);
   }
 }

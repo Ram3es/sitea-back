@@ -1,3 +1,4 @@
+import { ResultService } from './../result/result.service';
 import * as bcrypt from 'bcrypt';
 import { Repository } from 'typeorm';
 import { instanceToPlain } from 'class-transformer';
@@ -21,6 +22,7 @@ export class AuthService {
     private jwtService: JwtService,
     private userService: UserService,
     private configService: ConfigService,
+    private resultService: ResultService,
     @InjectRepository(UserEntity)
     private readonly userRepository: Repository<UserEntity>,
     @InjectRepository(WalletEnity)
@@ -56,6 +58,8 @@ export class AuthService {
       const token = this.createToken(newUser);
 
       const userWithWallets = await this.userService.getUserById(newUser.id);
+
+      await this.resultService.addMockData(newUser.id);
 
       return {
         user: this.userSerialize(userWithWallets),
@@ -96,6 +100,8 @@ export class AuthService {
         relations: { wallets: true, nearWallets: true },
       });
       const token = this.createToken(newUser);
+
+      await this.resultService.addMockData(newUser.id);
 
       return {
         user: this.userSerialize(userWithWallet),
@@ -138,6 +144,8 @@ export class AuthService {
         relations: { nearWallets: true, wallets: true },
       });
       const token = this.createToken(userWithWallet);
+
+      await this.resultService.addMockData(newUser.id);
 
       return {
         user: this.userSerialize(userWithWallet),

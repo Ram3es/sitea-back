@@ -10,5 +10,6 @@ import { ResultEntity } from './entities/result.entity';
   imports: [TypeOrmModule.forFeature([ResultEntity]), UserModule],
   providers: [ResultService],
   controllers: [ResultController],
+  exports: [ResultService],
 })
 export class ResultModule {}
