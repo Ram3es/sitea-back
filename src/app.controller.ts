@@ -11,6 +11,6 @@ export class AppController {
       .toString()
       .trim();
 
-    return `SITYEA API: Running ${process.env.NODE_ENV} version, last commit: ${commitHash}`;
+    return `SitYea API: Running ${process.env.NODE_ENV} version, last commit: ${commitHash}`;
   }
 }
